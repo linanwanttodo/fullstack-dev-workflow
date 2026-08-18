@@ -1,0 +1,11 @@
+{
+  "name": "skill-eval-project",
+  "version": "0.1.0",
+  "description": "Seed project for fullstack-dev-workflow execution eval",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test test/"
+  }
+}

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Fullstack Dev Workflow (fdw) — a rigorous software-engineering skill for AI coding agents. 一套为 AI 编码代理设计的严谨全栈开发工作流技能。"
+    />
+    <title>Fullstack Dev Workflow — fdw</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div class="blueprint-grid" aria-hidden="true"></div>
+
+    <header class="masthead">
+      <a class="brand" href="#top">
+        <span class="brand-mark" aria-hidden="true">fdw</span>
+        <span class="brand-name">fullstack-dev-workflow</span>
+      </a>
+      <nav class="lang-switch" aria-label="language">
+        <button id="lang-zh" class="lang-btn is-active" type="button">中</button>
+        <span class="lang-slash" aria-hidden="true">/</span>
+        <button id="lang-en" class="lang-btn" type="button">EN</button>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <p class="hero-kicker" data-i18n="hero.kicker">ENGINEERING PROCESS · FOR AI AGENTS</p>
+        <h1 class="hero-title">
+          <span data-i18n="hero.title1">全栈开发</span>
+          <span class="hero-title-accent" data-i18n="hero.title2">工作流</span>
+        </h1>
+        <p class="hero-sub" data-i18n="hero.sub">
+          一套可安装到 AI 编码代理的严谨软件工程技能：从需求到运维，从原则到清单，把"好工程师的默认行为"编码成可执行的流程。
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#install" data-i18n="hero.cta1">安装技能</a>
+          <a class="btn btn-ghost" href="#lifecycle" data-i18n="hero.cta2">查看流程</a>
+        </div>
+        <div class="hero-specs" aria-hidden="true">
+          <span data-i18n="hero.spec1">1 个 SKILL.md</span>
+          <span data-i18n="hero.spec2">16 份引用文档</span>
+          <span data-i18n="hero.spec3">9 阶段生命周期</span>
+          <span data-i18n="hero.spec4">6 条核心不变量</span>
+        </div>
+      </section>
+
+      <section id="invariants" class="section">
+        <p class="section-no" aria-hidden="true">01</p>
+        <h2 class="section-title" data-i18n="inv.title">核心不变量</h2>
+        <p class="section-lede" data-i18n="inv.lede">无论任务是什么，以下六条始终成立。它们定义了"什么是好的开发工作"。</p>
+        <ol class="inv-list" id="inv-list"></ol>
+      </section>
+
+      <section id="principles" class="section">
+        <p class="section-no" aria-hidden="true">02</p>
+        <h2 class="section-title" data-i18n="pri.title">AI 工作原则</h2>
+        <p class="section-lede" data-i18n="pri.lede">行为准则——用"荣誉"约束代理：该做的是默认，该羞耻的是绝不能做。</p>
+        <ul class="pri-list" id="pri-list"></ul>
+      </section>
+
+      <section id="lifecycle" class="section">
+        <p class="section-no" aria-hidden="true">03</p>
+        <h2 class="section-title" data-i18n="life.title">完整生命周期</h2>
+        <p class="section-lede" data-i18n="life.lede">一个序列：九个阶段按序推进，每个阶段产出写入 docs/ 对应目录。增量开发则压缩前置阶段。</p>
+        <ol class="life-list" id="life-list"></ol>
+      </section>
+
+      <section id="references" class="section">
+        <p class="section-no" aria-hidden="true">04</p>
+        <h2 class="section-title" data-i18n="ref.title">引用文档</h2>
+        <p class="section-lede" data-i18n="ref.lede">流程的全部细节沉淀在 references/ 下。每个任务由 entry.md 分诊，路由到正确的引用。</p>
+        <div class="ref-grid" id="ref-grid"></div>
+      </section>
+
+      <section id="install" class="section section-install">
+        <p class="section-no" aria-hidden="true">05</p>
+        <h2 class="section-title" data-i18n="ins.title">安装</h2>
+        <p class="section-lede" data-i18n="ins.lede">两种方式：手动解压，或把一段提示词复制给你的 AI——它会自动完成安装。</p>
+        <div class="install-cols">
+          <div class="install-card">
+            <h3 class="install-card-title" data-i18n="ins.m1">方式一 · 手动</h3>
+            <ol class="install-steps">
+              <li data-i18n="ins.s1">下载 <code>fdw.zip</code>（GitHub Release）</li>
+              <li data-i18n="ins.s2">解压到 <code>~/.agents/skills/fdw/</code></li>
+              <li data-i18n="ins.s3">确认 <code>SKILL.md</code> 与 <code>references/</code> 就位</li>
+            </ol>
+          </div>
+          <div class="install-card">
+            <h3 class="install-card-title" data-i18n="ins.m2">方式二 · 交给 AI</h3>
+            <p class="install-note" data-i18n="ins.s4">复制 README 中的"安装提示词"发给你的 AI，它会下载压缩包、解压并验证安装。</p>
+            <a class="btn btn-primary" href="#install" data-i18n="ins.cta">获取提示词</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="testing" class="section">
+        <p class="section-no" aria-hidden="true">06</p>
+        <h2 class="section-title" data-i18n="tst.title">可重复评测</h2>
+        <p class="section-lede" data-i18n="tst.lede">这个技能自己有测试：触发评测、路由评测、执行评测——每次修改都防回归。</p>
+        <div class="tst-cols">
+          <div class="tst-item">
+            <span class="tst-idx">T1</span>
+            <h3 data-i18n="tst.t1">触发评测</h3>
+            <p data-i18n="tst.t1d">20 条查询，验证 description 该触发时触发、不该触发时不触发。</p>
+          </div>
+          <div class="tst-item">
+            <span class="tst-idx">T2</span>
+            <h3 data-i18n="tst.t2">路由评测</h3>
+            <p data-i18n="tst.t2d">19 条请求，验证正确路由到唯一引用。</p>
+          </div>
+          <div class="tst-item">
+            <span class="tst-idx">T3</span>
+            <h3 data-i18n="tst.t3">执行评测</h3>
+            <p data-i18n="tst.t3d">修 bug / TDD / 安全审计三个场景，在种子工程上验证流程无摩擦。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-end">
+        <p class="end-line" data-i18n="end.line">没有流程的工程是冒险；有流程的工程是纪律。</p>
+        <p class="end-sub" data-i18n="end.sub">fdw · fullstack dev workflow · one skill to rule the stack</p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>© 2026 · MIT License</span>
+      <span>fullstack-dev-workflow</span>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
