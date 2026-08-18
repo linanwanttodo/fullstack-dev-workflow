@@ -111,32 +111,43 @@
 
 整个项目或大而边界模糊的功能，按顺序执行以下阶段；已有项目内的增量工作直接跳转 `workflow.md` 并压缩前置阶段。启动前先读 `documentation.md`（它定义每个阶段写入的 `docs/` 目录结构）。
 
-```mermaid
-flowchart LR
-    A["读 documentation.md"] --> B{"任务规模"}
-    B -- "整个项目 / 大而模糊" --> C["① 需求分析 · requirements.md · 产出 01"]
-    B -- "已有项目内增量" --> D["压缩前置阶段 · 读 workflow.md"]
-    C --> E["② 可行性 · planning.md · 产出 02"]
-    E --> F{"go / no-go"}
-    F -- "go" --> G["③ 规划选型 · planning.md"]
-    F -- "no-go" --> H["停止 · 记录原因"]
-    G --> I["④ 设计 · architecture.md · 产出 03"]
-    I --> J["⑤ 脚手架 · 测试先行"]
-    J --> K["⑥ 实现 · workflow.md · 产出 04"]
-    K --> L["⑦ 测试 · testing.md"]
-    L --> M["⑧ 部署 · deployment.md · 产出 05"]
-    M --> N["⑨ 运维 · deployment.md"]
-    N --> O{"DoD 门禁"}
-    O -- "满足" --> P["完成"]
-    O -- "不满足 · 新一轮迭代" --> K
-    D --> Q{"改动分类"}
-    Q -- "否 · 行为变更" --> R["workflow.md 循环"]
-    Q -- "是 · trivial" --> S["仅验证 · 不变量 6"]
-    R --> K
-    S --> K
+```text
+全生命周期 · 9 阶段 · 项目级 DoD 门禁
+────────────────────────────────────
+读 references/documentation.md (定义 docs/ 结构与各阶段模板)
+        │
+        ▼
+任务规模?
+   ├─ 整个项目 / 大而模糊的功能 ─────────────┐
+   │                                       │
+   │  ① 需求分析 · requirements.md  → 产出 docs/01-requirements/
+   │  ② 可行性    · planning.md     → 产出 docs/02-planning/
+   │  go / no-go?
+   │     ├─ no-go → 停止 · 记录原因与风险
+   │     └─ go
+   │        ③ 规划选型 · planning.md（技术栈+ADR）
+   │        ④ 设计     · architecture.md → 产出 docs/03-architecture/
+   │        ⑤ 脚手架（版本控制·骨架·docs/·测试脚手架）
+   │
+   └─ 已有项目内增量
+         压缩前置阶段 · 直接读 workflow.md
+         改动分类?
+            ├─ 行为变更 → workflow.md 循环
+            └─ trivial  → 仅验证 · 不变量 6
+   │
+   ▼
+⑥ 实现 · workflow.md        → 产出 docs/04-modules/
+⑦ 测试 · testing.md
+⑧ 部署 · deployment.md      → 产出 docs/05-deployment/
+⑨ 运维 · deployment.md
+   │
+   ▼
+DoD 门禁?
+   ├─ 满足 → 完成
+   └─ 不满足 → 回到 ⑥ 实现，开启新一轮迭代
 ```
 
-网页版流程图由页面直接渲染（含每个阶段的完整要点），流程定义源文件在 `web/public/lifecycle-zh.puml`（PlantUML）。
+网页版流程图由页面直接渲染（含每个阶段的完整要点）；流程定义源文件在 `web/public/lifecycle-zh.puml`（PlantUML）。
 
 | 阶段 | 内容 | Reference | 产出 |
 |---|---|---|---|

@@ -113,29 +113,40 @@ These six apply **always**, regardless of task type:
 
 For a whole project or a large, poorly-scoped feature, run these phases in order. Incremental work inside an existing project skips straight to `workflow.md` and compresses the front-loaded phases. Read `documentation.md` first — it defines the `docs/` layout each phase captures into.
 
-```mermaid
-flowchart LR
-    A["Read documentation.md"] --> B{"Task scope"}
-    B -- "whole project / large feature" --> C["① Requirements · requirements.md · outputs 01"]
-    B -- "existing project increment" --> D["compress early phases · read workflow.md"]
-    C --> E["② Feasibility · planning.md · outputs 02"]
-    E --> F{"go / no-go"}
-    F -- "go" --> G["③ Tech selection · planning.md"]
-    F -- "no-go" --> H["Stop · record reasons"]
-    G --> I["④ Design · architecture.md · outputs 03"]
-    I --> J["⑤ Scaffolding · test-first"]
-    J --> K["⑥ Implementation · workflow.md · outputs 04"]
-    K --> L["⑦ Testing · testing.md"]
-    L --> M["⑧ Deployment · deployment.md · outputs 05"]
-    M --> N["⑨ Operations · deployment.md"]
-    N --> O{"DoD gate"}
-    O -- "met" --> P["Done"]
-    O -- "not met · new iteration" --> K
-    D --> Q{"Change type"}
-    Q -- "no · behavior change" --> R["workflow.md loop"]
-    Q -- "yes · trivial" --> S["Verify only · invariant 6"]
-    R --> K
-    S --> K
+```text
+Full lifecycle · 9 phases · project-level DoD gate
+──────────────────────────────────────────────────
+Read references/documentation.md (defines docs/ structure & templates)
+        │
+        ▼
+Task scope?
+   ├─ whole project / large fuzzy feature ─────┐
+   │                                           │
+   │  ① Requirements · requirements.md → outputs docs/01-requirements/
+   │  ② Feasibility  · planning.md     → outputs docs/02-planning/
+   │  go / no-go?
+   │     ├─ no-go → Stop · record reasons & risks
+   │     └─ go
+   │        ③ Tech selection · planning.md (stack + ADR)
+   │        ④ Design         · architecture.md → outputs docs/03-architecture/
+   │        ⑤ Scaffolding (git · skeleton · docs/ · test scaffolding)
+   │
+   └─ existing project increment
+         compress early phases · read workflow.md directly
+         change type?
+            ├─ behavior change → workflow.md loop
+            └─ trivial         → verify only · invariant 6
+   │
+   ▼
+⑥ Implementation · workflow.md    → outputs docs/04-modules/
+⑦ Testing         · testing.md
+⑧ Deployment      · deployment.md → outputs docs/05-deployment/
+⑨ Operations      · deployment.md
+   │
+   ▼
+DoD gate?
+   ├─ met → Done
+   └─ not met → back to ⑥ Implementation, new iteration
 ```
 
 The web page renders the flow diagram directly in CSS/HTML (with every phase's full details); the flow source of truth is `web/public/lifecycle-zh.puml` (PlantUML).
