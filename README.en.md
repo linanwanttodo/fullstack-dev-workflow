@@ -115,30 +115,30 @@ For a whole project or a large, poorly-scoped feature, run these phases in order
 
 ```mermaid
 flowchart LR
-    A["Read references/documentation.md<br/>defines docs/ structure & templates"] --> B{"Task scope"}
-    B -- "whole project / large fuzzy feature" --> C["① Requirements · requirements.md<br/>problem·scope·persona·FR/NFR·stories+acceptance·MoSCoW<br/>outputs docs/01-requirements/"]
-    B -- "existing project increment" --> D["compress early phases<br/>read workflow.md directly"]
-    C --> E["② Feasibility · planning.md<br/>technical/economic/operational/legal/timeline·risks<br/>outputs docs/02-planning/"]
+    A["Read documentation.md"] --> B{"Task scope"}
+    B -- "whole project / large feature" --> C["① Requirements · requirements.md · outputs 01"]
+    B -- "existing project increment" --> D["compress early phases · read workflow.md"]
+    C --> E["② Feasibility · planning.md · outputs 02"]
     E --> F{"go / no-go"}
-    F -- "go" --> G["③ Tech selection · planning.md<br/>tech stack+ADR·breakdown·milestones·risks"]
-    F -- "no-go" --> H["Stop · record reasons & risks"]
-    G --> I["④ Design · architecture.md<br/>architecture·layers·API contracts·schema·data flow·UI/UX·security<br/>outputs docs/03-architecture/"]
-    I --> J["⑤ Scaffolding<br/>git·skeleton·docs/·test scaffolding<br/>a passing test is the floor"]
-    J --> K["⑥ Implementation · workflow.md<br/>explore→clarify→design→test-first→implement→self-review→verify→commit<br/>outputs docs/04-modules/"]
-    K --> L["⑦ Testing · testing.md<br/>unit→integration→E2E·perf/security checks"]
-    L --> M["⑧ Deployment · deployment.md<br/>CI/CD·environments·rollback·smoke·secrets<br/>outputs docs/05-deployment/"]
-    M --> N["⑨ Operations · deployment.md<br/>monitoring·error tracking·feedback loop"]
+    F -- "go" --> G["③ Tech selection · planning.md"]
+    F -- "no-go" --> H["Stop · record reasons"]
+    G --> I["④ Design · architecture.md · outputs 03"]
+    I --> J["⑤ Scaffolding · test-first"]
+    J --> K["⑥ Implementation · workflow.md · outputs 04"]
+    K --> L["⑦ Testing · testing.md"]
+    L --> M["⑧ Deployment · deployment.md · outputs 05"]
+    M --> N["⑨ Operations · deployment.md"]
     N --> O{"DoD gate"}
     O -- "met" --> P["Done"]
     O -- "not met · new iteration" --> K
     D --> Q{"Change type"}
-    Q -- "no · behavior change" --> R["workflow.md loop<br/>explore→clarify→design→test-first→implement→self-review→verify→commit"]
-    Q -- "yes · trivial" --> S["Verify only<br/>invariant 6"]
+    Q -- "no · behavior change" --> R["workflow.md loop"]
+    Q -- "yes · trivial" --> S["Verify only · invariant 6"]
     R --> K
     S --> K
 ```
 
-The web page renders the flow diagram directly in CSS/HTML — no image is shipped. The flow source of truth is `web/public/lifecycle-zh.puml` (PlantUML).
+The web page renders the flow diagram directly in CSS/HTML (with every phase's full details); the flow source of truth is `web/public/lifecycle-zh.puml` (PlantUML).
 
 | Phase | Contents | Reference | Output |
 |---|---|---|---|

@@ -113,30 +113,30 @@
 
 ```mermaid
 flowchart LR
-    A["读 references/documentation.md<br/>定义 docs/ 结构与各阶段模板"] --> B{"任务规模"}
-    B -- "整个项目 / 大而模糊的功能" --> C["① 需求分析 · requirements.md<br/>问题·范围·画像·FR/NFR·用户故事+验收·MoSCoW<br/>产出 docs/01-requirements/"]
-    B -- "已有项目内增量" --> D["压缩前置阶段<br/>直接读 workflow.md"]
-    C --> E["② 可行性 · planning.md<br/>技术/经济/运营/法律/工期·风险<br/>产出 docs/02-planning/"]
+    A["读 documentation.md"] --> B{"任务规模"}
+    B -- "整个项目 / 大而模糊" --> C["① 需求分析 · requirements.md · 产出 01"]
+    B -- "已有项目内增量" --> D["压缩前置阶段 · 读 workflow.md"]
+    C --> E["② 可行性 · planning.md · 产出 02"]
     E --> F{"go / no-go"}
-    F -- "go" --> G["③ 规划选型 · planning.md<br/>技术栈+ADR·任务分解·里程碑·风险登记"]
-    F -- "no-go" --> H["停止 · 记录原因与风险"]
-    G --> I["④ 设计 · architecture.md<br/>架构·分层·API契约·schema·数据流·UI/UX·安全<br/>产出 docs/03-architecture/"]
-    I --> J["⑤ 脚手架<br/>版本控制·骨架·docs/·测试脚手架<br/>「一个通过的测试」是地板"]
-    J --> K["⑥ 实现 · workflow.md<br/>探索→澄清→设计→测试先行→实现→自审→验证→提交<br/>产出 docs/04-modules/"]
-    K --> L["⑦ 测试 · testing.md<br/>单元→集成→E2E·性能/安全检查"]
-    L --> M["⑧ 部署 · deployment.md<br/>CI/CD·环境·回滚·冒烟·密钥<br/>产出 docs/05-deployment/"]
-    M --> N["⑨ 运维 · deployment.md<br/>监控·错误跟踪·反馈回路"]
+    F -- "go" --> G["③ 规划选型 · planning.md"]
+    F -- "no-go" --> H["停止 · 记录原因"]
+    G --> I["④ 设计 · architecture.md · 产出 03"]
+    I --> J["⑤ 脚手架 · 测试先行"]
+    J --> K["⑥ 实现 · workflow.md · 产出 04"]
+    K --> L["⑦ 测试 · testing.md"]
+    L --> M["⑧ 部署 · deployment.md · 产出 05"]
+    M --> N["⑨ 运维 · deployment.md"]
     N --> O{"DoD 门禁"}
     O -- "满足" --> P["完成"]
     O -- "不满足 · 新一轮迭代" --> K
     D --> Q{"改动分类"}
-    Q -- "否 · 行为变更" --> R["workflow.md 循环<br/>探索→澄清→设计→测试先行→实现→自审→验证→提交"]
-    Q -- "是 · trivial" --> S["仅验证<br/>不变量 6"]
+    Q -- "否 · 行为变更" --> R["workflow.md 循环"]
+    Q -- "是 · trivial" --> S["仅验证 · 不变量 6"]
     R --> K
     S --> K
 ```
 
-网页版流程图由页面直接渲染（无需图片）；流程定义源文件在 `web/public/lifecycle-zh.puml`（PlantUML）。
+网页版流程图由页面直接渲染（含每个阶段的完整要点），流程定义源文件在 `web/public/lifecycle-zh.puml`（PlantUML）。
 
 | 阶段 | 内容 | Reference | 产出 |
 |---|---|---|---|
