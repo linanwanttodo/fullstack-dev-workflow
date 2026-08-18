@@ -20,6 +20,7 @@ jobs:
           zip -r fdw.zip fdw
 
       - name: Verify zip contents
+        working-directory: .agents/skills
         run: |
           unzip -l fdw.zip | head -20
           unzip -l fdw.zip | grep -q "fdw/SKILL.md" || { echo "SKILL.md missing in zip"; exit 1; }
