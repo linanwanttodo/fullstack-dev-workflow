@@ -1,5 +1,5 @@
 import "./style.css";
-import { STATIC, INVARIANTS, PRINCIPLES, LIFECYCLE, REF_GROUPS, type Lang } from "./i18n";
+import { STATIC, PROMPT, INVARIANTS, PRINCIPLES, LIFECYCLE, REF_GROUPS, FLOW_ROWS, FLOW_BRANCH, type Lang } from "./i18n";
 
 let lang: Lang = "zh";
 
@@ -37,12 +37,41 @@ function renderReferences(lang: Lang): void {
   }).join("");
 }
 
+function renderPrinciples(lang: Lang): void {
+  const ul = $("#pri-list");
+  ul.innerHTML = PRINCIPLES.map((p, i) => {
+    const shame = lang === "zh" ? p.shame.zh : p.shame.en;
+    const honor = lang === "zh" ? p.honor.zh : p.honor.en;
+    return `<li class="pri-item"><span class="idx">${String(i + 1).padStart(2, "0")}</span><div class="pri-text"><span class="pri-shame">${shame}</span><span class="pri-honor">${honor}</span></div></li>`;
+  }).join("");
+}
+
 function renderAll(): void {
   renderStatic(lang);
   renderList("#inv-list", INVARIANTS, (d, i) => `<li><span class="idx">${String(i + 1).padStart(2, "0")}</span><span>${lang === "zh" ? d.zh : d.en}</span></li>`);
-  renderList("#pri-list", PRINCIPLES, (d, i) => `<li><span class="idx">${String(i + 1).padStart(2, "0")}</span><span>${lang === "zh" ? d.zh : d.en}</span></li>`);
+  renderPrinciples(lang);
   renderList("#life-list", LIFECYCLE, (d, i) => `<li><span class="idx">${String(i + 1).padStart(2, "0")}</span><span>${lang === "zh" ? d.zh : d.en}</span></li>`);
   renderReferences(lang);
+  renderFlow(lang);
+}
+
+function renderFlow(lang: Lang): void {
+  const flow = $("#life-flow");
+  flow.innerHTML =
+    FLOW_ROWS.map((row) => {
+      const cells = row
+        .map((n) => {
+          const dec = n.decision ? " flow-node-decision" : "";
+          const num = n.num ? `<span class="flow-num">${n.num}</span>` : "";
+          const ref = n.ref ? `<span class="flow-ref">${n.ref}</span>` : "";
+          const content = n.content ? `<div class="flow-content">${n.content[lang]}</div>` : "";
+          const out = n.out ? `<span class="flow-out">${n.out[lang]}</span>` : "";
+          return `<div class="flow-node${dec}">${num}<div class="flow-label">${n.label[lang]}${ref}</div>${content}${out}</div>`;
+        })
+        .join('<span class="flow-arrow" aria-hidden="true">→</span>');
+      return `<div class="flow-row">${cells}</div>`;
+    }).join('<div class="flow-down" aria-hidden="true">↓</div>') +
+    `<p class="flow-branch">${FLOW_BRANCH[lang]}</p>`;
 }
 
 function setLang(next: Lang): void {
@@ -74,6 +103,62 @@ function initReveal(): void {
   document.querySelectorAll<HTMLElement>(".hero").forEach((el) => el.classList.add("is-revealed"));
 }
 
+function flashCopied(btn: HTMLButtonElement): void {
+  const original = STATIC[lang]["ins.cta"];
+  btn.textContent = lang === "zh" ? "已复制" : "Copied";
+  btn.classList.add("is-copied");
+  setTimeout(() => {
+    btn.textContent = original;
+    btn.classList.remove("is-copied");
+  }, 1600);
+}
+
+function fallbackCopy(text: string, btn: HTMLButtonElement): void {
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.setAttribute("readonly", "");
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand("copy");
+    flashCopied(btn);
+  } catch {
+    window.alert(lang === "zh" ? "复制失败，请手动复制" : "Copy failed — copy it manually");
+  } finally {
+    document.body.removeChild(ta);
+  }
+}
+
+function initCopyPrompt(): void {
+  const btn = $("#copy-prompt") as HTMLButtonElement;
+  btn.addEventListener("click", () => {
+    const text = PROMPT[lang];
+    if (!navigator.clipboard?.writeText) {
+      fallbackCopy(text, btn);
+      return;
+    }
+    let settled = false;
+    const timeout = window.setTimeout(() => {
+      if (!settled) fallbackCopy(text, btn);
+    }, 400);
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        settled = true;
+        window.clearTimeout(timeout);
+        flashCopied(btn);
+      })
+      .catch(() => {
+        settled = true;
+        window.clearTimeout(timeout);
+        fallbackCopy(text, btn);
+      });
+  });
+}
+
 renderAll();
 initLangSwitch();
 initReveal();
+initCopyPrompt();

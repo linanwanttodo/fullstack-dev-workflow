@@ -71,7 +71,10 @@
         <p class="section-no" aria-hidden="true">03</p>
         <h2 class="section-title" data-i18n="life.title">完整生命周期</h2>
         <p class="section-lede" data-i18n="life.lede">一个序列：九个阶段按序推进，每个阶段产出写入 docs/ 对应目录。增量开发则压缩前置阶段。</p>
-        <ol class="life-list" id="life-list"></ol>
+        <div class="life-cols">
+          <ol class="life-list" id="life-list"></ol>
+          <div class="life-flow" id="life-flow" role="img" aria-label="full lifecycle flow"></div>
+        </div>
       </section>
 
       <section id="references" class="section">
@@ -97,7 +100,7 @@
           <div class="install-card">
             <h3 class="install-card-title" data-i18n="ins.m2">方式二 · 交给 AI</h3>
             <p class="install-note" data-i18n="ins.s4">复制 README 中的"安装提示词"发给你的 AI，它会下载压缩包、解压并验证安装。</p>
-            <a class="btn btn-primary" href="#install" data-i18n="ins.cta">获取提示词</a>
+            <button type="button" class="btn btn-primary" id="copy-prompt" data-i18n="ins.cta">获取提示词</button>
           </div>
         </div>
       </section>

@@ -1,0 +1,102 @@
+@startuml
+title Full lifecycle · 9 phases\nProject-level Definition of Done gate
+
+skinparam {
+  defaultFontName "Noto Sans"
+  ArrowColor #2a4a73
+  ActivityBackgroundColor #f4f8fb
+  ActivityBorderColor #2a4a73
+  ActivityDiamondBackgroundColor #fdf3d7
+  ActivityDiamondBorderColor #b8963c
+  ActivityBarColor #f2a33c
+  NoteBackgroundColor #fff8ec
+  NoteBorderColor #d9b45c
+  PartitionBackgroundColor #eaf1f8
+  ActivityFontSize 13
+  ArrowFontSize 11
+}
+
+start
+:Read references/documentation.md\n(defines the docs/ layout & per-phase templates);
+
+if (Task scope) then (whole project / large fuzzy feature)
+
+  partition "① Requirements · requirements.md" {
+    :Problem · scope (In/Out/constraints) · persona\nFunctional/non-functional requirements\nUser stories + acceptance criteria · MoSCoW;
+    note right
+      outputs: docs/01-requirements/
+    end note
+  }
+
+  partition "② Feasibility · planning.md" {
+    :Technical/economic/operational/legal/timeline\nfeasibility · risk register;
+    note right
+      outputs: docs/02-planning/
+    end note
+  }
+
+  if (go / no-go) then (go)
+
+    partition "③ Planning & tech selection · planning.md" {
+      :Tech stack + ADR (recorded reasons)\nTask breakdown · milestones · risk register;
+    }
+
+    partition "④ Design · architecture.md\n+ frontend-design/security" {
+      :Architecture · layers · API contracts · schema\nData flow · UI/UX · security design;
+      note right
+        outputs: docs/03-architecture/
+      end note
+    }
+
+    partition "⑤ Scaffolding" {
+      :Version control · tech-stack skeleton · docs/ dir\nTest scaffolding — "a passing test" is the floor;
+    }
+
+    partition "⑥ Implementation · workflow.md" {
+      :Per-change loop\nexplore → clarify → design → test-first\n→ implement → self-review → verify → commit;
+      note right
+        outputs: docs/04-modules/(keep current)
+      end note
+    }
+
+    partition "⑦ Testing · testing.md" {
+      :Unit → integration → E2E\nplus performance & security checks;
+    }
+
+    partition "⑧ Deployment · deployment.md" {
+      :CI/CD · environments · rollback plan\nSmoke tests · secrets management;
+      note right
+        outputs: docs/05-deployment/
+      end note
+    }
+
+    partition "⑨ Operations · deployment.md" {
+      :Monitoring · error tracking\nFeedback loop;
+    }
+
+    if (DoD gate) then (met)
+      stop
+    else (not met)
+      :Back to ⑥ Implementation, start a new iteration;
+    endif
+
+  else (no-go)
+    :Stop · record reasons & risks;
+  endif
+
+else (incremental work in existing project)
+
+  :Compress early phases, read references/workflow.md directly;
+
+  if (Change mechanical, low-risk, structurally unchanged?) then (no · behavior change)
+    :workflow.md per-change loop\n(explore → clarify → design → test-first\n→ implement → self-review → verify → commit);
+  else (yes · trivial)
+    :Verify only, no plan or tests\n(invariant 6: observable difference = behavior change);
+  endif
+
+  :Enter the change loop, keep iterating;
+
+endif
+
+stop
+@enduml

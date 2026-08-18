@@ -1,0 +1,102 @@
+@startuml
+title 全生命周期 · 9 阶段\n项目级 Definition of Done 门禁
+
+skinparam {
+  defaultFontName "Noto Sans CJK SC"
+  ArrowColor #2a4a73
+  ActivityBackgroundColor #f4f8fb
+  ActivityBorderColor #2a4a73
+  ActivityDiamondBackgroundColor #fdf3d7
+  ActivityDiamondBorderColor #b8963c
+  ActivityBarColor #f2a33c
+  NoteBackgroundColor #fff8ec
+  NoteBorderColor #d9b45c
+  PartitionBackgroundColor #eaf1f8
+  ActivityFontSize 13
+  ArrowFontSize 11
+}
+
+start
+:读 references/documentation.md\n（定义 docs/ 目录结构与各阶段文档模板）;
+
+if (任务规模) then (整个项目 / 大而模糊的功能)
+
+  partition "① 需求分析 · requirements.md" {
+    :问题陈述 · 范围(In/Out/约束) · 人物画像\n功能/非功能需求 · 用户故事+验收标准\nMoSCoW 优先级;
+    note right
+      产出: docs/01-requirements/
+    end note
+  }
+
+  partition "② 可行性 · planning.md" {
+    :技术/经济/运营/法律/工期可行性\n风险清单;
+    note right
+      产出: docs/02-planning/
+    end note
+  }
+
+  if (go / no-go) then (go)
+
+    partition "③ 规划与技术选型 · planning.md" {
+      :技术栈 + 记录理由(ADR)\n任务分解 · 里程碑 · 风险登记;
+    }
+
+    partition "④ 设计 · architecture.md\n+ frontend-design/security" {
+      :架构 · 分层 · API 契约 · schema\n数据流 · UI/UX · 安全设计;
+      note right
+        产出: docs/03-architecture/
+      end note
+    }
+
+    partition "⑤ 脚手架" {
+      :版本控制 · 技术栈骨架 · docs/ 目录\n测试脚手架 「一个通过的测试」是地板;
+    }
+
+    partition "⑥ 实现 · workflow.md" {
+      :per-change 循环\n探索 → 澄清 → 设计 → 测试先行\n→ 实现 → 自审 → 验证 → 提交;
+      note right
+        产出: docs/04-modules/(保持最新)
+      end note
+    }
+
+    partition "⑦ 测试 · testing.md" {
+      :单元 → 集成 → E2E\n外加性能与安全检查;
+    }
+
+    partition "⑧ 部署 · deployment.md" {
+      :CI/CD · 环境 · 回滚计划\n冒烟测试 · 密钥管理;
+      note right
+        产出: docs/05-deployment/
+      end note
+    }
+
+    partition "⑨ 运维 · deployment.md" {
+      :监控 · 错误跟踪\n反馈回路;
+    }
+
+    if (DoD 门禁) then (满足)
+      stop
+    else (不满足)
+      :回到 ⑥ 实现，开启新一轮迭代;
+    endif
+
+  else (no-go)
+    :停止 · 记录原因与风险;
+  endif
+
+else (已有项目内的增量工作)
+
+  :压缩前置阶段，直接读 references/workflow.md;
+
+  if (改动是否机械、低风险、结构不变?) then (否 · 行为变更)
+    :workflow.md 逐步更循环\n(探索 → 澄清 → 设计 → 测试先行\n→ 实现 → 自审 → 验证 → 提交);
+  else (是 · trivial)
+    :仅验证，无需计划与测试\n(不变量 6: 用户可观察到的差异 = 行为变更);
+  endif
+
+  :进入变更循环，继续迭代;
+
+endif
+
+stop
+@enduml

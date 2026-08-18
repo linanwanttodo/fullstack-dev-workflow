@@ -40,38 +40,43 @@ export const INVARIANTS: { zh: string; en: string }[] = [
   },
 ];
 
-export const PRINCIPLES: { zh: string; en: string }[] = [
+export interface Principle {
+  shame: { zh: string; en: string };
+  honor: { zh: string; en: string };
+}
+
+export const PRINCIPLES: Principle[] = [
   {
-    zh: "荣誉：先读真实接口再动手。 羞耻：凭空猜 API。",
-    en: "Honor consulting, shame guessing APIs. Read the actual interface before assuming what it does.",
+    shame: { zh: "以暗猜接口为耻", en: "Shame guessing APIs" },
+    honor: { zh: "以认真查阅为荣", en: "Honor consulting the real interface" },
   },
   {
-    zh: "荣誉：意图模糊时先确认。 羞耻：基于猜测含糊执行。",
-    en: "Honor seeking confirmation, shame vague execution. Confirm the goal when intent is ambiguous.",
+    shame: { zh: "以模糊执行为耻", en: "Shame executing vaguely" },
+    honor: { zh: "以寻求确认为荣", en: "Honor seeking confirmation" },
   },
   {
-    zh: "荣誉：向人类验证业务意图。 羞耻：擅自发明需求。",
-    en: "Honor human confirmation, shame assuming the business. Validate business intent, never invent requirements silently.",
+    shame: { zh: "以盲想业务为耻", en: "Shame assuming the business" },
+    honor: { zh: "以人类确认为荣", en: "Honor human confirmation" },
   },
   {
-    zh: "荣誉：复用现有接口与代码。 羞耻：凭空发明新的。",
-    en: "Honor reusing existing, shame inventing new. Prefer existing interfaces over creating new ones.",
+    shame: { zh: "以创造接口为耻", en: "Shame inventing new interfaces" },
+    honor: { zh: "以复用现有为荣", en: "Honor reusing existing code" },
   },
   {
-    zh: "荣誉：主动测试与验证。 羞耻：跳过验证就报告完成。",
-    en: "Honor testing proactively, shame skipping verification. Never report done without running the checks.",
+    shame: { zh: "以跳过验证为耻", en: "Shame skipping verification" },
+    honor: { zh: "以主动测试为荣", en: "Honor testing proactively" },
   },
   {
-    zh: "荣誉：遵守项目惯例。 羞耻：破坏架构边界。",
-    en: "Honor following conventions, shame breaking architecture. Stay within the project's standards and boundaries.",
+    shame: { zh: "以破坏架构为耻", en: "Shame breaking the architecture" },
+    honor: { zh: "以遵循规范为荣", en: "Honor following conventions" },
   },
   {
-    zh: "荣誉：诚实承认不懂。 羞耻：假装理解。",
-    en: "Honor honest ignorance, shame faking understanding. Say clearly what you don't know instead of pretending.",
+    shame: { zh: "以假装理解为耻", en: "Shame faking understanding" },
+    honor: { zh: "以诚实无知为荣", en: "Honor honest ignorance" },
   },
   {
-    zh: "荣誉：谨慎地重构。 羞耻：盲目地改动。",
-    en: "Honor careful refactoring, shame blind modification. Change deliberately with a before/after design.",
+    shame: { zh: "以盲目修改为耻", en: "Shame blind modification" },
+    honor: { zh: "以谨慎重构为荣", en: "Honor careful refactoring" },
   },
 ];
 
@@ -133,6 +138,57 @@ export const REF_GROUPS: RefGroup[] = [
     ],
   },
 ];
+
+export interface FlowNode {
+  num: string;
+  label: { zh: string; en: string };
+  ref?: string;
+  content?: { zh: string; en: string };
+  out?: { zh: string; en: string };
+  decision?: boolean;
+}
+
+export const FLOW_ROWS: FlowNode[][] = [
+  [
+    { num: "", label: { zh: "读文档", en: "Read docs" }, ref: "documentation.md", content: { zh: "定义 docs/ 结构与各阶段模板", en: "defines docs/ structure & templates" } },
+    { num: "", label: { zh: "任务规模", en: "Task scope" }, content: { zh: "整个项目 / 已有项目内增量", en: "whole project / existing project increment" }, decision: true },
+    { num: "①", label: { zh: "需求分析", en: "Requirements" }, ref: "requirements.md", content: { zh: "问题·范围·画像 / FR-NFR·用户故事+验收 / MoSCoW", en: "problem·scope·persona / FR-NFR·stories+acceptance / MoSCoW" }, out: { zh: "产出 docs/01-requirements/", en: "outputs docs/01-requirements/" } },
+    { num: "②", label: { zh: "可行性", en: "Feasibility" }, ref: "planning.md", content: { zh: "技术/经济/运营/法律/工期 / 风险清单", en: "technical/economic/operational/legal/timeline / risks" }, out: { zh: "产出 docs/02-planning/", en: "outputs docs/02-planning/" } },
+  ],
+  [
+    { num: "", label: { zh: "go / no-go", en: "go / no-go" }, content: { zh: "no-go → 停止·记录原因与风险", en: "no-go → stop·record reasons & risks" }, decision: true },
+    { num: "③", label: { zh: "规划选型", en: "Tech selection" }, ref: "planning.md", content: { zh: "技术栈+ADR / 任务分解·里程碑·风险登记", en: "tech stack+ADR / breakdown·milestones·risks" } },
+    { num: "④", label: { zh: "设计", en: "Design" }, ref: "architecture.md", content: { zh: "架构·分层·API契约 / schema·数据流 / UI/UX·安全", en: "architecture·layers·API contracts / schema·data flow / UI/UX·security" }, out: { zh: "产出 docs/03-architecture/", en: "outputs docs/03-architecture/" } },
+    { num: "⑤", label: { zh: "脚手架", en: "Scaffolding" }, content: { zh: "版本控制·骨架·docs/ / 测试脚手架 / 「一个通过的测试」是地板", en: "git·skeleton·docs/ / test scaffolding / a passing test is the floor" } },
+  ],
+  [
+    { num: "⑥", label: { zh: "实现", en: "Implementation" }, ref: "workflow.md", content: { zh: "探索→澄清→设计→测试先行 / 实现→自审→验证→提交", en: "explore→clarify→design→test-first / implement→self-review→verify→commit" }, out: { zh: "产出 docs/04-modules/", en: "outputs docs/04-modules/" } },
+    { num: "⑦", label: { zh: "测试", en: "Testing" }, ref: "testing.md", content: { zh: "单元→集成→E2E / 性能·安全检查", en: "unit→integration→E2E / perf·security checks" } },
+    { num: "⑧", label: { zh: "部署", en: "Deployment" }, ref: "deployment.md", content: { zh: "CI/CD·环境·回滚 / 冒烟·密钥", en: "CI/CD·envs·rollback / smoke·secrets" }, out: { zh: "产出 docs/05-deployment/", en: "outputs docs/05-deployment/" } },
+    { num: "⑨", label: { zh: "运维", en: "Operations" }, ref: "deployment.md", content: { zh: "监控·错误跟踪 / 反馈回路", en: "monitoring·error tracking / feedback loop" } },
+  ],
+  [
+    { num: "", label: { zh: "DoD 门禁", en: "DoD gate" }, content: { zh: "满足 → 完成 / 不满足 → 回到实现", en: "met → done / not met → back to Implementation" }, decision: true },
+  ],
+];
+
+export const FLOW_BRANCH: Record<Lang, string> = {
+  zh: "已有项目内增量 → 压缩前置阶段，直接读 references/workflow.md",
+  en: "Existing project increment → compress early phases, read references/workflow.md directly",
+};
+
+export const PROMPT: Record<Lang, string> = {
+  zh: `请帮我安装 fullstack-dev-workflow (fdw) 这个 skill，请执行：
+1. 下载 https://github.com/linanwanttodo/fullstack-dev-workflow/releases/latest/download/fdw.zip
+2. 解压到 ~/.agents/skills/fdw/
+3. 验证 ~/.agents/skills/fdw/SKILL.md 与 ~/.agents/skills/fdw/references/ 均存在
+4. 报告安装结果`,
+  en: `Please install the fullstack-dev-workflow (fdw) skill for me. Do the following:
+1. Download https://github.com/linanwanttodo/fullstack-dev-workflow/releases/latest/download/fdw.zip
+2. Unpack it to ~/.agents/skills/fdw/
+3. Verify ~/.agents/skills/fdw/SKILL.md and ~/.agents/skills/fdw/references/ both exist
+4. Report the install result`,
+};
 
 export const STATIC: Record<Lang, Record<string, string>> = {
   zh: {
