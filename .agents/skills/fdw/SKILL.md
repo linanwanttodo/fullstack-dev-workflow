@@ -1,5 +1,6 @@
 ---
 name: fullstack-dev-workflow
+version: 0.2.0
 description: >-
   Enforce a rigorous software-engineering process across the entire development lifecycle on every coding task.
   Use this skill for ALL development work — new projects, new features, bug fixes,

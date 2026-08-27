@@ -38,7 +38,7 @@
    ls ~/.agents/skills/fdw/SKILL.md ~/.agents/skills/fdw/references/entry.md
    ```
 
-3. 确认 `SKILL.md` 与 `references/`（16 份引用文档）就位。
+3. 确认 `SKILL.md` 与 `references/`（16 份引用文档）就位。zip 内带 `VERSION` 文件标记构建版本，版本历史见技能目录下的 `CHANGELOG.md`。
 
 ### 方式二 · 交给 AI
 
@@ -229,8 +229,9 @@ DoD 门禁?
 ```
 fullstack-dev-workflow/
 ├── .agents/skills/fdw/            # 技能本体（单一事实来源）
-│   ├── SKILL.md                   # 入口：核心不变量、AI 工作准则、9 阶段生命周期、任务路由、引用表
+│   ├── SKILL.md                   # 入口：核心不变量、AI 工作准则、9 阶段生命周期、任务路由、引用表（frontmatter 带 version）
 │   ├── README.md                  # 技能的详细中文说明（八荣八耻原文、路由表、方法论要点）
+│   ├── CHANGELOG.md               # 版本变更记录（须与 SKILL.md 的 version 一致，CI 校验 tag）
 │   └── references/                # 16 份引用文档
 │       ├── entry.md               # 入口分诊：任何请求先分类再路由
 │       ├── workflow.md            # per-change 循环（探索→澄清→设计→测试先行→实现→自审→验证→提交）
@@ -254,11 +255,14 @@ fullstack-dev-workflow/
 │   ├── ROUTING_EVAL.md            # 分诊路由评测（19 条）
 │   ├── EXECUTION_EVAL.md          # 执行层评测（3 场景：修 bug/TDD 新功能/安全审计）
 │   └── fixtures/                  # 执行评测的种子工程（自带活 bug 与漏洞）
+├── scripts/
+│   └── check-consistency.mjs      # 一致性校验：路由表防漂移 / 引用计数 / 内链 / i18n 键 / 评测结构 / 版本同步
 ├── web/                           # 介绍网页（Vite + TypeScript，中英双语）
-│   ├── public/                    # 静态资源；lifecycle-zh.puml / lifecycle-en.puml（流程源定义，PlantUML）
+│   ├── public/                    # 静态资源；favicon.svg、lifecycle-zh.puml / lifecycle-en.puml（流程源定义，PlantUML）
 │   └── src/                       # i18n.ts / main.ts / style.css（流程图由页面直接渲染）
 ├── .github/workflows/
-│   ├── package.yml                # 打包 fdw.zip → artifact；打 tag 时发布 Release 资产
+│   ├── check.yml                  # 每次 push / PR：跑一致性校验 + 构建 web/
+│   ├── package.yml                # 打包 fdw.zip（注入 VERSION）→ artifact；打 tag 时校验版本后发布 Release 资产
 │   └── pages.yml                  # 构建 web/ → GitHub Pages
 ├── README.md / README.en.md       # 本说明（中英双语）
 └── LICENSE                        # MIT
@@ -296,6 +300,8 @@ fullstack-dev-workflow/
 - `EXECUTION_EVAL.md` — 执行层评测：修 bug / TDD 新功能 / 安全审计 3 个场景，在种子工程上走完整流程，收集摩擦点。
 - `fixtures/` — 执行评测的种子工程（自带一个活的舍入 bug 和一个命令注入漏洞）。
 
+评测文件自身受 `scripts/check-consistency.mjs` 的**结构校验**保护（用例数与标题声明一致、期望路由真实存在、种子文件齐全、各文件含"历史回归"节），随 CI 自动运行。
+
 历史：2026-08-18 首轮跑通，发现并修复 12 项问题（路由表漂移、trivial/无意图无路由、JWT 功能漏 security、docs 同步无比例缩放、security 清单无纯函数豁免、description 触发边界等）。详见各评测文件底部"历史回归"。
 
 ---
@@ -303,6 +309,9 @@ fullstack-dev-workflow/
 ## 本地开发
 
 ```bash
+# 一致性校验（路由表防漂移、引用计数、内链、i18n 键、评测结构、版本同步；CI 的 check.yml 同款）
+node scripts/check-consistency.mjs
+
 # 网页本地开发（Vite dev server）
 cd web && npm install && npm run dev
 
@@ -313,7 +322,7 @@ cd web && npm run build
 cd .agents/skills && zip -r fdw.zip fdw && unzip -l fdw.zip | head
 ```
 
-CI 自动流程：推 `main` → `package.yml` 打包 `fdw.zip` 并上传 artifact，`pages.yml` 构建并部署网页；打 tag（如 `git tag v0.1.0 && git push origin v0.1.0`）→ 发布带 `fdw.zip` 的 Release。
+CI 自动流程：推 `main` → `check.yml` 跑一致性校验并构建网页，`package.yml` 打包 `fdw.zip`（注入 `VERSION`）并上传 artifact，`pages.yml` 构建并部署网页；打 tag（如 `git tag v0.2.0 && git push origin v0.2.0`）→ 校验 tag 与 `SKILL.md` 的 `version` 一致后，发布带 `fdw.zip` 的 Release。
 
 ---
 

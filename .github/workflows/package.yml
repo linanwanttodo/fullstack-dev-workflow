@@ -11,8 +11,21 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Resolve version from SKILL.md
+        id: version
+        run: |
+          VERSION=$(sed -n 's/^version:[[:space:]]*//p' .agents/skills/fdw/SKILL.md | head -1 | tr -d '[:space:]')
+          if [ -z "$VERSION" ]; then
+            echo "version: field missing in .agents/skills/fdw/SKILL.md frontmatter"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "$VERSION" > .agents/skills/fdw/VERSION
 
       - name: Package skill into zip
         run: |
@@ -25,6 +38,7 @@ jobs:
           unzip -l fdw.zip | head -20
           unzip -l fdw.zip | grep -q "fdw/SKILL.md" || { echo "SKILL.md missing in zip"; exit 1; }
           unzip -l fdw.zip | grep -q "fdw/references/entry.md" || { echo "references/entry.md missing in zip"; exit 1; }
+          unzip -p fdw.zip fdw/VERSION | grep -qx "${{ steps.version.outputs.version }}" || { echo "VERSION stamp missing or wrong in zip"; exit 1; }
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -45,6 +59,15 @@ jobs:
         with:
           name: fdw-skill
           path: .
+
+      - name: Verify tag matches SKILL.md version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          SKILL_VERSION="${{ needs.package.outputs.version }}"
+          if [ "$TAG_VERSION" != "$SKILL_VERSION" ]; then
+            echo "tag v$TAG_VERSION does not match SKILL.md version $SKILL_VERSION"
+            exit 1
+          fi
 
       - name: Create release with zip
         uses: softprops/action-gh-release@v2

@@ -38,7 +38,7 @@ A **self-contained software-engineering methodology** and AI coding workflow, sh
    ls ~/.agents/skills/fdw/SKILL.md ~/.agents/skills/fdw/references/entry.md
    ```
 
-3. Confirm `SKILL.md` and `references/` (16 reference docs) are in place.
+3. Confirm `SKILL.md` and `references/` (16 reference docs) are in place. The zip carries a `VERSION` file stamping the build; version history lives in `CHANGELOG.md` inside the skill folder.
 
 ### Option 2 · Hand it to an AI
 
@@ -231,8 +231,9 @@ Rules:
 ```
 fullstack-dev-workflow/
 ├── .agents/skills/fdw/            # skill body (single source of truth)
-│   ├── SKILL.md                   # entry: core invariants, AI work principles, 9-phase lifecycle, routing, reference table
+│   ├── SKILL.md                   # entry: core invariants, AI work principles, 9-phase lifecycle, routing, reference table (frontmatter carries version)
 │   ├── README.md                  # detailed skill guide (8 honor/8 shame, route map, methodology highlights)
+│   ├── CHANGELOG.md               # version history (must match SKILL.md version; CI verifies the release tag)
 │   └── references/                # 16 reference docs
 │       ├── entry.md               # entry triage: classify any request before routing
 │       ├── workflow.md            # per-change loop (explore→clarify→design→test-first→implement→self-review→verify→commit)
@@ -256,11 +257,14 @@ fullstack-dev-workflow/
 │   ├── ROUTING_EVAL.md            # routing eval (19 cases)
 │   ├── EXECUTION_EVAL.md          # execution eval (3 scenarios: fix bug / TDD feature / security audit)
 │   └── fixtures/                  # seed project for execution eval (ships a live bug and a vuln)
+├── scripts/
+│   └── check-consistency.mjs      # consistency checks: routing-table anti-drift / ref counts / internal links / i18n keys / eval structure / version sync
 ├── web/                           # intro site (Vite + TypeScript, zh/en)
-│   ├── public/                    # static assets; lifecycle-zh.puml / lifecycle-en.puml (flow source of truth, PlantUML)
+│   ├── public/                    # static assets; favicon.svg, lifecycle-zh.puml / lifecycle-en.puml (flow source of truth, PlantUML)
 │   └── src/                       # i18n.ts / main.ts / style.css (flow diagram rendered in-page)
 ├── .github/workflows/
-│   ├── package.yml                # package fdw.zip → artifact; tag → Release asset
+│   ├── check.yml                  # every push / PR: consistency checks + web build
+│   ├── package.yml                # package fdw.zip (stamped with VERSION) → artifact; tag → verify version → Release asset
 │   └── pages.yml                  # build web/ → GitHub Pages
 ├── README.md / README.en.md       # this documentation (zh + en)
 └── LICENSE                        # MIT
@@ -298,6 +302,8 @@ fullstack-dev-workflow/
 - `EXECUTION_EVAL.md` — execution eval: 3 scenarios (fix bug / TDD new feature / security audit) run end-to-end on a seed project, collecting friction points.
 - `fixtures/` — the execution-eval seed project (ships a live rounding bug and a command-injection vulnerability).
 
+The eval files themselves are guarded by **structural checks** in `scripts/check-consistency.mjs` (case counts match the claimed totals, expected routes point to real references, seed files exist, every file keeps a history/regression section) — run automatically in CI.
+
 History: first pass on 2026-08-18 found and fixed 12 issues (route-map drift, trivial/no-intent routes, JWT missing security routing, docs sync without proportionality, security checklist lacking pure-function exemption, description trigger boundaries, etc.). See the "history / regression" section at the bottom of each eval file.
 
 ---
@@ -305,6 +311,9 @@ History: first pass on 2026-08-18 found and fixed 12 issues (route-map drift, tr
 ## Local development
 
 ```bash
+# Consistency checks (routing-table anti-drift, ref counts, internal links, i18n keys, eval structure, version sync — same as CI's check.yml)
+node scripts/check-consistency.mjs
+
 # Site dev server (Vite)
 cd web && npm install && npm run dev
 
@@ -315,7 +324,7 @@ cd web && npm run build
 cd .agents/skills && zip -r fdw.zip fdw && unzip -l fdw.zip | head
 ```
 
-CI on push to `main`: `package.yml` packages `fdw.zip` and uploads it as an artifact; `pages.yml` builds and deploys the site. Pushing a tag (e.g. `git tag v0.1.0 && git push origin v0.1.0`) publishes a Release carrying `fdw.zip`.
+CI on push to `main`: `check.yml` runs the consistency checks and builds the site; `package.yml` packages `fdw.zip` (stamped with `VERSION`) and uploads it as an artifact; `pages.yml` builds and deploys the site. Pushing a tag (e.g. `git tag v0.2.0 && git push origin v0.2.0`) verifies the tag matches the `version` in `SKILL.md`, then publishes a Release carrying `fdw.zip`.
 
 ---
 
